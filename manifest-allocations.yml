@@ -2,7 +2,7 @@ applications:
 - name: tracker-allocations
   path: ./applications/allocations-server/build/libs/allocations-server.jar
   routes:
-    - route: allocations-pal-distributed-vib-tar.apps.pcf.paltraining.perficient.com
+    - route: allocations-pal-distributed-vibhor-tarun.apps.pcf.paltraining.perficient.com
   memory: 1G
   instances: 1
   services:

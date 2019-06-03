@@ -2,7 +2,7 @@ applications:
 - name: tracker-registration
   path: ./applications/registration-server/build/libs/registration-server.jar
   routes:
-    - route: registration-pal-distributed-vib-tar.apps.pcf.paltraining.perficient.com
+    - route: registration-pal-distributed-vibhor-tarun.apps.pcf.paltraining.perficient.com
   memory: 1G
   instances: 1
   services:
