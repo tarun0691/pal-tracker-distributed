@@ -14,9 +14,11 @@ jobs:
   include:
     - stage: build and publish
       language: java
-      jdk: openjdk11
+      jdk: openjdk8
       addons:
         mariadb: '10.2'
+      before_install:
+        - chmod +x gradlew
       install: skip
       before_script:
         - mysql -uroot < databases/create_databases.sql
@@ -37,10 +39,12 @@ jobs:
 
     - stage: build and publish
       language: java
-      jdk: openjdk11
+      jdk: openjdk8
       addons:
         mariadb: '10.2'
       install: skip
+      before_install:
+        - chmod +x gradlew
       before_script:
         - mysql -uroot < databases/create_databases.sql
         - ./gradlew testMigrate
@@ -56,10 +60,12 @@ jobs:
 
     - stage: build and publish
       language: java
-      jdk: openjdk11
+      jdk: openjdk8
       addons:
         mariadb: '10.2'
       install: skip
+      before_install:
+        - chmod +x gradlew
       before_script:
         - mysql -uroot < databases/create_databases.sql
         - ./gradlew testMigrate
@@ -75,10 +81,12 @@ jobs:
 
     - stage: build and publish
       language: java
-      jdk: openjdk11
+      jdk: openjdk8
       addons:
         mariadb: '10.2'
       install: skip
+      before_install:
+        - chmod +x gradlew
       before_script:
         - mysql -uroot < databases/create_databases.sql
         - ./gradlew testMigrate
@@ -94,12 +102,15 @@ jobs:
 
     - stage: deploy
       language: bash
+      before_install:
+        - chmod +x gradlew
       script:
         - echo "Downloading allocations server $RELEASE_TAG"
         - wget -P applications/allocations-server/build/libs https://github.com/$GITHUB_USERNAME/pal-tracker-distributed/releases/download/$RELEASE_TAG/allocations-server.jar
       before_deploy:
         - cp manifest-allocations.yml manifest.yml
         - echo "Deploying allocations server $RELEASE_TAG"
+        - chmod +x gradlew
       deploy: &cloudfoundry
         provider: cloudfoundry
         api: $CF_API_URL
@@ -109,32 +120,41 @@ jobs:
         space: $CF_SPACE
     - stage: deploy
       language: bash
+      before_install:
+        - chmod +x gradlew
       script:
         - echo "Downloading backlog server $RELEASE_TAG"
         - wget -P applications/backlog-server/build/libs https://github.com/$GITHUB_USERNAME/pal-tracker-distributed/releases/download/$RELEASE_TAG/backlog-server.jar
       before_deploy:
         - cp manifest-backlog.yml manifest.yml
         - echo "Deploying backlog server $RELEASE_TAG"
+        - chmod +x gradlew
       deploy:
         <<: *cloudfoundry
     - stage: deploy
       language: bash
+      before_install:
+        - chmod +x gradlew
       script:
         - echo "Downloading registration server $RELEASE_TAG"
         - wget -P applications/registration-server/build/libs https://github.com/$GITHUB_USERNAME/pal-tracker-distributed/releases/download/$RELEASE_TAG/registration-server.jar
       before_deploy:
         - cp manifest-registration.yml manifest.yml
         - echo "Deploying registration server $RELEASE_TAG"
+        - chmod +x gradlew
       deploy:
         <<: *cloudfoundry
     - stage: deploy
       language: bash
+      before_install:
+        - chmod +x gradlew
       script:
         - echo "Downloading timesheets server $RELEASE_TAG"
         - wget -P applications/timesheets-server/build/libs https://github.com/$GITHUB_USERNAME/pal-tracker-distributed/releases/download/$RELEASE_TAG/timesheets-server.jar
       before_deploy:
         - cp manifest-timesheets.yml manifest.yml
         - echo "Deploying timesheets server $RELEASE_TAG"
+        - chmod +x gradlew
       deploy:
         <<: *cloudfoundry
     - stage: migrate
@@ -144,6 +164,7 @@ jobs:
         - echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
         - sudo apt-get update
         - sudo apt-get install cf-cli
+        - chmod +x gradlew
       script:
         - cf login -a $CF_API_URL -u $CF_USERNAME -p $CF_PASSWORD -o $CF_ORG -s $CF_SPACE
         - ./gradlew cfMigrate
